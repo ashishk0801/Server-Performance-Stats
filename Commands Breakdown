@@ -1,0 +1,50 @@
+top -bn1 | grep "Cpu(s)" | awk '{print "CPU Usage: " 100-$8 "%"}'
+
+top -bn1:
+top is a command that provides a dynamic real-time view of running processes.
+-b (batch mode): Runs top in batch mode, which means it doesn't require user interaction.
+-n1: Specifies that top should only iterate once and then exit. This gives us a single snapshot of the system's state.
+grep "Cpu(s)":
+Filters the output of top to only include the line containing "Cpu(s)," which shows CPU usage statistics.
+awk '{print "CPU Usage: " 100-$8 "%"}':
+awk is a text processing tool.
+'{print "CPU Usage: " 100-$8 "%"}': This awk script extracts the idle CPU percentage (which is the 8th field, $8) and calculates the used CPU percentage (100 - idle). It then formats and prints the result.
+
+free -m | awk 'NR==2{printf "Used: %sMB, Free: %sMB (%.2f%% Used)\n", $3, $4, $3*100/($3+$4)}'
+
+free -m:
+free displays the amount of free and used memory in the system.
+-m displays the memory information in megabytes.
+awk 'NR==2{printf "Used: %sMB, Free: %sMB (%.2f%% Used)\n", $3, $4, $3*100/($3+$4)}':
+NR==2: selects only the second line of the free output, which contains the memory usage summary.
+printf "Used: %sMB, Free: %sMB (%.2f%% Used)\n", $3, $4, $3*100/($3+$4): formats and prints the used memory ($3), free memory ($4), and the percentage of used memory.
+
+df -h --total | awk '/total/{printf "Used: %s, Free: %s (%.2f%% Used)\n", $3, $4, $3*100/($3+$4)}'
+
+df -h --total:
+df displays disk space usage.
+-h displays the output in human-readable format (e.g., KB, MB, GB).
+--total adds a total line at the end of the output, summarizing disk usage.
+awk '/total/{printf "Used: %s, Free: %s (%.2f%% Used)\n", $3, $4, $3*100/($3+$4)}':
+/total/: selects the line containing "total" from the df output.
+printf "Used: %s, Free: %s (%.2f%% Used)\n", $3, $4, $3*100/($3+$4): formats and prints the used disk space ($3), free disk space ($4), and the percentage of used disk space.
+
+
+ps -eo pid,comm,%cpu --sort=-%cpu | head -n 6
+
+ps -eo pid,comm,%cpu --sort=-%cpu:
+ps displays information about running processes.
+-eo pid,comm,%cpu: Specifies the output format: process ID (PID), command name (comm), and CPU usage (%cpu).
+--sort=-%cpu: Sorts the processes in descending order of CPU usage.
+head -n 6:
+Displays the first 6 lines of the sorted output (including the header line), effectively showing the top 5 processes.
+
+ps -eo pid,comm,%mem --sort=-%mem | head -n 6
+
+ps -eo pid,comm,%mem --sort=-%mem:
+ps displays information about running processes.
+-eo pid,comm,%mem: Specifies the output format: process ID (PID), command name (comm), and memory usage (%mem).
+--sort=-%mem: Sorts the processes in descending order of memory usage.
+head -n 6:
+Displays the first 6 lines of the sorted output (including the header line), effectively showing the top 5 processes.
+
